@@ -65,7 +65,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-        android:id="@+id/cleanOutput"
+        android:id="@+id/clearOutputBtn"
         android:layout_width="94dp"
         android:layout_height="47dp"
         android:layout_marginBottom="144dp"

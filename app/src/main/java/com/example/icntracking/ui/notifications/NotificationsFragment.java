@@ -124,9 +124,9 @@ public class NotificationsFragment extends Fragment {
                         Log.i(TAG, "sendInterestBtn clicked");
                         // Send Interest
                         sendInterest(false);
-                    } else if (v.getId() == binding.cleanOutput.getId()) {
+                    } else if (v.getId() == binding.clearOutputBtn.getId()) {
                         binding.zmeshOutputTextView.setText("");
-                        Log.i(TAG, "cleanOutput clicked");
+                        Log.i(TAG, "clearOutputBtn clicked");
                     } else {
                         throw new IllegalStateException("Unexpected value: " + v.getId());
                     }
@@ -138,6 +138,8 @@ public class NotificationsFragment extends Fragment {
 
         Button sendInterestBtn = (Button) binding.sendInterestBtn;
         sendInterestBtn.setOnClickListener(btnListener);
+        Button clearOutputBtn = (Button) binding.clearOutputBtn;
+        clearOutputBtn.setOnClickListener(btnListener);
 
         return root;
     }
@@ -146,8 +148,17 @@ public class NotificationsFragment extends Fragment {
      * @brief Fundtion for controlling (debug) output
      * @param msg
      */
-    void zmeshOutput(String msg, int level) {
-        Log.i(TAG, msg);
+    void zmeshOutput(int prio, String msg) {
+        Log.println(prio, TAG, msg);
+        // Write to view
+        if (binding.zmeshDebug.isChecked() || prio == Log.INFO) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    binding.zmeshOutputTextView.append(msg + "\n");
+                }
+            });
+        }
     }
 
     void stopUDPServer() {
@@ -172,7 +183,7 @@ public class NotificationsFragment extends Fragment {
         @Override
         public void onRx(InetAddress address, int port, byte[] frame) {
             String msg = "Got frame ("+frame.length+"): " + ZMeshUtils.bytesToHex(frame);
-            zmeshOutput("Got frame ("+frame.length+"): " + ZMeshUtils.bytesToHex(frame), Log.INFO);
+            zmeshOutput(Log.DEBUG, "Got frame ("+frame.length+"): " + ZMeshUtils.bytesToHex(frame));
 
             // Check MAC
             byte[] cmacFrame = ZMeshFrameHelper.getMac(frame);
@@ -180,8 +191,7 @@ public class NotificationsFragment extends Fragment {
             if (!Arrays.equals(cmacFrame, cmacGenerated)) {
                 String g = ZMeshUtils.bytesToHex(cmacGenerated);
                 String f = ZMeshUtils.bytesToHex(cmacFrame);
-                msg = "Frame CMAC invalid: Frame: " + f + ", generated: " + g;
-                Log.e(TAG, msg);
+                zmeshOutput(Log.ERROR, "Frame CMAC invalid: Frame: " + f + ", generated: " + g);
                 return;
             }
             // Dig out common stuff
@@ -190,15 +200,13 @@ public class NotificationsFragment extends Fragment {
             byte[] payload = ZMeshFrameHelper.getPayload(frame);
 
             if (name == null || name.length == 0 || fseq < 0) {
-                msg = "Name (" + ZMeshUtils.bytesToHex(name) + ") or fseq (" + fseq + ") error";
-                Log.w(TAG, msg);
+                zmeshOutput(Log.WARN, "Name (" + ZMeshUtils.bytesToHex(name) + ") or fseq (" + fseq + ") error");
                 return;
             }
 
             // Determine request type and forward to handler
             int packetType = ZMeshFrameHelper.getFctrlPacketType(frame);
-            msg = "PacketType: " + packetType + " from: " + netId +"/"+ ZMeshUtils.bytesToHex(name) + ", fseq: " + fseq;
-            Log.d(TAG, msg);
+            zmeshOutput(Log.DEBUG, "PacketType: " + packetType + " from: " + netId +"/"+ ZMeshUtils.bytesToHex(name) + ", fseq: " + fseq);
             switch (packetType) {
                 case ZMeshFrameHelper.PACKET_TYPE_INTEREST:
                     /* Send it to the content store */
@@ -211,22 +219,23 @@ public class NotificationsFragment extends Fragment {
                     break;
 
                 case ZMeshFrameHelper.PACKET_TYPE_INTEREST_RETURN:
-                    Log.e(TAG,"PACKET_TYPE_INTEREST_RETURN not implemented!");
+
+                    zmeshOutput(Log.ERROR, "PACKET_TYPE_INTEREST_RETURN not implemented!");
                     break;
 
                 case ZMeshFrameHelper.PACKET_TYPE_CONTENT_ANNOUNCEMENT:
-                    Log.e(TAG,"PACKET_TYPE_CONTENT_ANNOUNCEMENT not implemented!");;
+                    zmeshOutput(Log.ERROR, "PACKET_TYPE_CONTENT_ANNOUNCEMENT not implemented!");
                     break;
 
                 default:
-                    Log.e(TAG,"Unknown packet type: " + packetType);
+                    zmeshOutput(Log.WARN, "Unknown packet type: " + packetType);
                     break;
             }
         }
     };
 
     private void sendInterest(boolean subscribe) throws IOException {
-        Log.i(TAG, "Sending interest (subscribe="+subscribe+")");
+        zmeshOutput(Log.INFO, "Sending interest (subscribe="+subscribe+")");
         // Create an interest Z-Mesh frame
         long timeNow = ZMeshUtils.getEpocTimeMs();
         short interestExpireSecs = 2;
@@ -250,23 +259,14 @@ public class NotificationsFragment extends Fragment {
             ByteBuffer byteBuf = ByteBuffer.wrap(payloadPLainText);
             long timestamp = ZMeshUtils.getPayloadTimestamp(byteBuf);
             float value = byteBuf.getFloat();
-            message = "Received Content: " + netId+"/"+ZMeshUtils.bytesToHex(name) + " FSEQ="+fseq + " ts="+timestamp+" value="+value;
+            zmeshOutput(Log.INFO, "Received Content: " + netId+"/"+ZMeshUtils.bytesToHex(name) + " FSEQ="+fseq + " ts="+timestamp+" value="+value);
         } else {
-            message = "Received Content: " + netId+"/"+ZMeshUtils.bytesToHex(name) + " FSEQ="+fseq + " frame ("+frame.length+"): "+ZMeshUtils.bytesToHex(frame);
+            zmeshOutput(Log.INFO, "Received Content: " + netId+"/"+ZMeshUtils.bytesToHex(name) + " FSEQ="+fseq + " frame ("+frame.length+"): "+ZMeshUtils.bytesToHex(frame));
         }
-        // Write to log
-        Log.i(TAG, message);
-        // Write to view
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                binding.zmeshOutputTextView.append(message + "\n");
-            }
-        });
     }
 
     private void handleInterest(long netId, byte[] name, int fseq, byte[] frame, byte[] payload) {
-        Log.i(TAG, "Received Interest: " + netId+"/"+ZMeshUtils.bytesToHex(name) + " FSEQ="+fseq + " frame ("+frame.length+"): "+ZMeshUtils.bytesToHex(frame));
+        zmeshOutput(Log.DEBUG, "Received Interest: " + netId+"/"+ZMeshUtils.bytesToHex(name) + " FSEQ="+fseq + " frame ("+frame.length+"): "+ZMeshUtils.bytesToHex(frame));
         // byte[] interstPayload = ZMeshFrameHelper.getPayload(frame);
     }
 
