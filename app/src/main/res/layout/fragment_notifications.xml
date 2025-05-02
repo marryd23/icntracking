@@ -12,13 +12,14 @@
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="144dp"
-        android:scrollbars="vertical"
+        android:layout_marginBottom="200dp"
         android:gravity="bottom"
+        android:scrollbars="vertical"
         android:text="@string/zmeshOutput"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,7 +27,7 @@
         android:id="@+id/udpServerSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginBottom="106dp"
         android:text="UDP Server"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,24 +35,43 @@
 
     <Button
         android:id="@+id/sendInterestBtn"
+        android:layout_width="109dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="Interest"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/interestSubscribe"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Switch
+        android:id="@+id/zmeshDebug"
+        android:layout_width="118dp"
+        android:layout_height="29dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="20dp"
+        android:text="Debug"
+        app:layout_constraintBottom_toTopOf="@+id/udpServerSwitch"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Switch
+        android:id="@+id/interestSubscribe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="96dp"
-        android:text="Interest"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/sendInterestSubscribeBtn"
-        app:layout_constraintStart_toEndOf="@+id/udpServerSwitch" />
-
-    <Button
-        android:id="@+id/sendInterestSubscribeBtn"
-        android:layout_width="135dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="96dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="106dp"
         android:text="Subscribe"
-        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/cleanOutput"
+        android:layout_width="94dp"
+        android:layout_height="47dp"
+        android:layout_marginBottom="144dp"
+        android:text="Clear"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/sendInterestBtn"
+        app:layout_constraintStart_toEndOf="@+id/zmeshDebug" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
