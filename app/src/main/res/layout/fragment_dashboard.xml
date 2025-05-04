@@ -38,25 +38,25 @@
         app:layout_constraintHeight_percent="0.6"
         app:layout_constraintDimensionRatio="1:1">
 
-        <!-- Rad 1 -->
+        <!-- Row 1 -->
         <TextView android:id="@+id/cell_1_1" style="@style/GridCellStyle" tools:text="1.1"/>
         <TextView android:id="@+id/cell_1_2" style="@style/GridCellStyle" tools:text="1.2"/>
         <TextView android:id="@+id/cell_1_3" style="@style/GridCellStyle" tools:text="1.3"/>
         <TextView android:id="@+id/cell_1_4" style="@style/GridCellStyle" tools:text="1.4"/>
 
-        <!-- Rad 2 -->
+        <!-- Row 2 -->
         <TextView android:id="@+id/cell_2_1" style="@style/GridCellStyle" tools:text="2.1"/>
         <TextView android:id="@+id/cell_2_2" style="@style/GridCellStyle" tools:text="2.2"/>
         <TextView android:id="@+id/cell_2_3" style="@style/GridCellStyle" tools:text="2.3"/>
         <TextView android:id="@+id/cell_2_4" style="@style/GridCellStyle" tools:text="2.4"/>
 
-        <!-- Rad 3 -->
+        <!-- Row 3 -->
         <TextView android:id="@+id/cell_3_1" style="@style/GridCellStyle" tools:text="3.1"/>
         <TextView android:id="@+id/cell_3_2" style="@style/GridCellStyle" tools:text="3.2"/>
         <TextView android:id="@+id/cell_3_3" style="@style/GridCellStyle" tools:text="3.3"/>
         <TextView android:id="@+id/cell_3_4" style="@style/GridCellStyle" tools:text="3.4"/>
 
-        <!-- Rad 4 -->
+        <!-- Row 4 -->
         <TextView android:id="@+id/cell_4_1" style="@style/GridCellStyle" tools:text="4.1"/>
         <TextView android:id="@+id/cell_4_2" style="@style/GridCellStyle" tools:text="4.2"/>
         <TextView android:id="@+id/cell_4_3" style="@style/GridCellStyle" tools:text="4.3"/>
