@@ -1,45 +1,134 @@
 package com.example.icntracking;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+/**
+ * Represents a sensor with a base icon and an "eye" icon
+ * that changes appearance based on activation ordering,
+ * and records timestamps.
+ */
 public class Sensor {
     private String id;
-    private int iconResId;   // Icon resource to display (e.g., R.drawable.baseline_sensors_24)
-    private int colorResId;  // Color resource for the icon (e.g., R.color.red)
-    private float alpha;     // Icon transparency (0.0 = fully transparent, 1.0 = fully opaque)
 
-    public Sensor(String id, int iconResId, int colorResId, float alpha) {
+    // Bas-ikon och dess transparens (aldrig förändrad)
+    private int sensorIconResId;
+    private float sensorAlpha;
+
+    // "Öga"-ikon och dess utseende
+    private int eyeIconResId;
+    private int eyeTint;    // färg för "eye"
+    private float eyeAlpha; // transparens för "eye"
+
+    // Aktiveringsstatus
+    private boolean triggered;
+    private long lastActivationTime;
+
+    // Statisk lista för att hålla ordning på aktiverade sensorer
+    private static final List<Sensor> triggeredSensors = new ArrayList<>();
+
+    public Sensor(String id,
+                  int sensorIconResId,
+                  float sensorAlpha,
+                  int eyeIconResId) {
         this.id = id;
-        this.iconResId = iconResId;
-        this.colorResId = colorResId;
-        this.alpha = alpha;
+        this.sensorIconResId = sensorIconResId;
+        this.sensorAlpha = sensorAlpha;
+        this.eyeIconResId = eyeIconResId;
+        this.triggered = false;
+        this.lastActivationTime = 0;
+        this.eyeTint = 0;   // inga värden tills aktivering
+        this.eyeAlpha = 0f; // fullt transparent
     }
 
-    // Getters
+    /**
+     * Aktiverar sensorn: sätter timestamp och uppdaterar
+     * ordering och utseende för "eye"-ikonen på alla sensorer.
+     */
+    public void activate() {
+        long now = System.currentTimeMillis();
+        this.triggered = true;
+        this.lastActivationTime = now;
+
+        // Lägg till om inte redan i listan
+        if (!triggeredSensors.contains(this)) {
+            triggeredSensors.add(this);
+        }
+        // Sortera efter senaste först
+        Collections.sort(triggeredSensors, new Comparator<Sensor>() {
+            @Override
+            public int compare(Sensor s1, Sensor s2) {
+                // högre timestamp först
+                return Long.compare(s2.lastActivationTime, s1.lastActivationTime);
+            }
+        });
+
+        // Uppdatera utseende för ögon-ikonen baserat på position
+        for (int i = 0; i < triggeredSensors.size(); i++) {
+            Sensor s = triggeredSensors.get(i);
+            if (i == 0) {
+                // senaste
+                s.eyeTint = android.R.color.holo_red_dark;
+                s.eyeAlpha = 1.0f;
+            } else if (i == 1) {
+                // näst senaste
+                s.eyeTint = android.R.color.holo_orange_light;
+                s.eyeAlpha = 1.0f;
+            } else if (i == 2) {
+                // tredje senaste
+                s.eyeTint = android.R.color.holo_orange_light;
+                s.eyeAlpha = 0.5f;
+            } else {
+                // övriga; göm dem
+                s.eyeAlpha = 0f;
+            }
+        }
+    }
+
+    // Getters för binding i UI
     public String getId() {
         return id;
     }
 
-    public int getIconResId() {
-        return iconResId;
+    public int getSensorIconResId() {
+        return sensorIconResId;
     }
 
-    public int getColorResId() {
-        return colorResId;
+    public float getSensorAlpha() {
+        return sensorAlpha;
     }
 
-    public float getAlpha() {
-        return alpha;
+    public int getEyeIconResId() {
+        return eyeIconResId;
     }
 
-    // Setters
-    public void setIconResId(int iconResId) {
-        this.iconResId = iconResId;
+    public int getEyeTint() {
+        return eyeTint;
     }
 
-    public void setColorResId(int colorResId) {
-        this.colorResId = colorResId;
+    public float getEyeAlpha() {
+        return eyeAlpha;
     }
 
-    public void setAlpha(float alpha) {
-        this.alpha = alpha;
+    public boolean isTriggered() {
+        return triggered;
+    }
+
+    public long getLastActivationTime() {
+        return lastActivationTime;
+    }
+
+    /**
+     * För test eller reset: återställ all aktivering
+     */
+    public static void resetAll() {
+        for (Sensor s : new ArrayList<>(triggeredSensors)) {
+            s.triggered = false;
+            s.lastActivationTime = 0;
+            s.eyeAlpha = 0f;
+            triggeredSensors.clear();
+        }
     }
 }
