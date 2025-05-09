@@ -1,183 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    xmlns:app   ="http://schemas.android.com/apk/res-auto"
+    xmlns:tools ="http://schemas.android.com/tools"
+    android:layout_width ="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.dashboard.DashboardFragment">
 
-    <!-- Rubrik -->
+    <!-- Rubrik som vi sedan ändrar dynamiskt -->
     <TextView
         android:id="@+id/text_dashboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/title_dashboard"
+        android:layout_margin="16dp"
+        android:text="Dashboard"
         android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <Button
-        android:id="@+id/button_mock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Mock-up"
-        app:layout_constraintTop_toBottomOf="@id/text_dashboard"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="8dp"/>
-
+    <!-- Endast Reset-knappen -->
     <Button
         android:id="@+id/button_reset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:text="Reset"
         app:layout_constraintTop_toBottomOf="@id/text_dashboard"
-        app:layout_constraintStart_toEndOf="@id/button_mock"
-        android:layout_margin="8dp"/>
+        app:layout_constraintStart_toStartOf="parent"/>
 
-    <!-- 4×4 GridLayout -->
-    <androidx.gridlayout.widget.GridLayout
-        android:id="@+id/sensor_grid"
+    <!-- Container där vi swappar in Grid- eller Geofence-fragment -->
+    <FrameLayout
+        android:id="@+id/dashboardContent"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="16dp"
-        app:columnCount="4"
-        app:rowCount="4"
-        android:background="@android:color/white"
-        android:padding="4dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_reset"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.8"
-        app:layout_constraintHeight_percent="0.6"
-        app:layout_constraintVertical_bias="0.5"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintDimensionRatio="1:1">
-
-        <!-- Row 1 -->
-        <include
-            android:id="@+id/cell_1_1"
-            layout="@layout/layout_sensor_cell"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1" />
-        <include
-            android:id="@+id/cell_1_2"
-            layout="@layout/layout_sensor_cell"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"/>
-        <include
-            android:id="@+id/cell_1_3"
-            layout="@layout/layout_sensor_cell"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"/>
-        <include
-            android:id="@+id/cell_1_4"
-            layout="@layout/layout_sensor_cell"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"/>
-
-        <!-- Row 2 -->
-        <include
-            android:id="@+id/cell_2_1"
-            layout="@layout/layout_sensor_cell"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"/>
-        <include
-            android:id="@+id/cell_2_2"
-            layout="@layout/layout_sensor_cell"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"/>
-        <include
-            android:id="@+id/cell_2_3"
-            layout="@layout/layout_sensor_cell"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"/>
-        <include
-            android:id="@+id/cell_2_4"
-            layout="@layout/layout_sensor_cell"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"/>
-
-        <!-- Row 3 -->
-        <include
-            android:id="@+id/cell_3_1"
-            layout="@layout/layout_sensor_cell"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"/>
-        <include
-            android:id="@+id/cell_3_2"
-            layout="@layout/layout_sensor_cell"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"/>
-        <include
-            android:id="@+id/cell_3_3"
-            layout="@layout/layout_sensor_cell"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"/>
-        <include
-            android:id="@+id/cell_3_4"
-            layout="@layout/layout_sensor_cell"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"/>
-
-        <!-- Row 4 -->
-        <include
-            android:id="@+id/cell_4_1"
-            layout="@layout/layout_sensor_cell"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"/>
-        <include
-            android:id="@+id/cell_4_2"
-            layout="@layout/layout_sensor_cell"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"/>
-        <include
-            android:id="@+id/cell_4_3"
-            layout="@layout/layout_sensor_cell"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"/>
-        <include
-            android:id="@+id/cell_4_4"
-            layout="@layout/layout_sensor_cell"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"/>
-
-    </androidx.gridlayout.widget.GridLayout>
-
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

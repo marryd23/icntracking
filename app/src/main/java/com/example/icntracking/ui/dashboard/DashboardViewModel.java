@@ -5,15 +5,16 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class DashboardViewModel extends ViewModel {
+    // 1) En MutableLiveData som håller "grid" eller "geofence"
+    private final MutableLiveData<String> viewMode = new MutableLiveData<>("grid");
 
-    private final MutableLiveData<String> mText;
-
-    public DashboardViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("Use case 1");
+    // 2) Publik getter
+    public LiveData<String> getViewMode() {
+        return viewMode;
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    // 3) Publik setter
+    public void setViewMode(String mode) {
+        viewMode.setValue(mode);
     }
 }
